@@ -48,13 +48,42 @@ export const signup =async (req,res)=>{
         res.status(500).json({massage:"Internal Server Error"});
     }
 };
-export const login = (req,res)=>{
+export const login = async(req,res)=>{
+    const {email, password}=req.body
    try{
+    const user = await User.findOne({email})
+
+    if(!user){
+        return res.status(400).json({message:"Invalid Login"});
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password,user.password);
+    if(!isPasswordCorrect){
+        return res.status(400).json({message:"Invalid Password"})
+    }
+     generateToken(user._id,res)
+
+     res.status(200).json({
+        _id:user._id,
+        fullname:user.fullname,
+        email:user.email,
+        profilepic:user.profilepic,
+     })
+
 
    }catch (error){
-
+     console.log("Error in login controller",error.massage);
+     res.status(500).json({message:"Internal server Error 2"})
    }
 };
 export const logout = (req,res)=>{
-    res.send("signup route")
+    try{
+        res.cookie("jwt","",{maxAge:0})
+        res.status(200).json({message:"Logout successfully"});
+    }catch (error){
+          console.log("Error in logout controller",error.message);
+          res.status(500).json({message:"Internal Server error 3"})
+    }
 };
+
+export const updateProfile = async(req,res)=>{};
