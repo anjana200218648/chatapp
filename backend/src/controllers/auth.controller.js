@@ -49,7 +49,11 @@ export const signup =async (req,res)=>{
     }
 };
 export const login = (req,res)=>{
-    res.send("signup route")
+   try{
+
+   }catch (error){
+
+   }
 };
 export const logout = (req,res)=>{
     res.send("signup route")
